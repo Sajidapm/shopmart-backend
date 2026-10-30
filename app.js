@@ -1,19 +1,20 @@
 const express = require('express');
 const cors = require("cors");
-require("dotenv").config();
 const app = express()
-const mongoose = require("mongoose");
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+const connectDB = require('./data/db.js')
+connectDB()
 app.use(cors());
 app.use(express.json());
 
 
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 app.get('/', (req, res) => {
   res.send('Shopmart API is running')
 })
-const port = process.env.port || 3000;
+const port = process.env.PORT|| 3000;
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
