@@ -1,7 +1,6 @@
-
+const bcrypt = require("bcryptjs")
 const User = require("../models/user")
-const generateToken = require("../utils/generateToken")
-const bcrypt = require("bcrypt")
+//const generateToken = require("../utils/generateToken")
 
 //get users
 const getUsers = async(req, res) => {
@@ -25,7 +24,7 @@ const getUserbyId=async(req,res,next)=>{
     //const id = Number(req.params.id)
     // find user matching the id
   //  const user= users.find((user)=>user.id === id)
-  const user = await User.findById(id)
+  const user = await User.findById(req.params.id)
     if(!user){
         const error = new Error("User not found")
         error.status =404
@@ -41,8 +40,18 @@ const getUserbyId=async(req,res,next)=>{
 }
 // product Update /api/users/:id
 const updateUser =async(req,res,next)=>{
-  try{
-    const  updatedUser = await User.findByIdAndUpdate(req.params.id, req.body,
+ try {
+        const { name, email, password } = req.body;
+
+        const updateData = { name, email };
+
+        // Hash password if provided
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateData.password = hashedPassword;
+        }
+
+    const  updatedUser = await User.findByIdAndUpdate(req.params.id, updateData,
          {new:true,runValidators:true})
 
              if(!updatedUser){
@@ -59,6 +68,7 @@ const updateUser =async(req,res,next)=>{
 
 
   } catch(error){
+    next(error)
   }
 }
 //delete

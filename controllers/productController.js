@@ -1,5 +1,20 @@
 
 const Product = require("../models/product");
+//GET products
+const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find();  
+        return res.status(200).json({
+            success: true,
+            data: products
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 //Create product
 const createProduct = async (req, res) => {
     try {
@@ -112,4 +127,4 @@ const deleteProduct = async (req, res) => {
 };
 
 
-module.exports = { createProduct ,updateProduct,deleteProduct};
+module.exports = {getAllProducts, createProduct,  updateProduct,deleteProduct};

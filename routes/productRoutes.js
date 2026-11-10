@@ -10,7 +10,9 @@ router.post( "/createproduct",
     authorize("admin"),
     createProduct
    )
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct)
+router.put("/:id",  validateToken,
+    authorize("admin"),  updateProduct);
+router.delete("/:id",   validateToken,
+    authorize("admin"),deleteProduct)
 
 module.exports = router;
